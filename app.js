@@ -40,8 +40,8 @@ app.post("/register", async (req, res)=>{
     VALUES ("${username}", "${hashedPassword}");
     `
     await db.run(registerQuery)
+    res.status(200).json({ message: "Account Created Successfully" });
     
-    res.send("Account Created Successfully")
 })
 
 //Login API 
