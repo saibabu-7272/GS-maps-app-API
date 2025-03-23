@@ -17,15 +17,12 @@ const initDB = async ()=>{
         db = await open({
         filename : DBpath,
         driver : sqlite3.Database
-    },
-
-    app.listen(3000, ()=>{
+    });
+            app.listen(3000, ()=>{
         console.log("server started and running at port 3000");
-    })
-    
-
-    )}catch(e){
-        console.log(e)
+    });
+    }catch(e){
+        console.error("Database connection failed:", e);
     }
 }
 
@@ -57,11 +54,8 @@ app.post("/login", async (req, res)=>{
     `
     const dbData = await db.get(selectQuery)
    
-    
-    
     if(dbData === undefined){
-        res.status(400)
-        res.send("Invalid Username")
+        res.status(400).json({ error: "Invalid Username" });
     }else{
         const isValidPassword = await bcrypt.compare(password, dbData.password); 
         if(isValidPassword){
@@ -70,10 +64,8 @@ app.post("/login", async (req, res)=>{
             }
             const token = jwt.sign(payload, "SECRET_KEY")
             res.send({token})
-
         }else{
-            res.status(400)
-            res.send("Invalid Password")
+          res.status(400).json({ error: "Invalid Password" });
         }
     }
     
